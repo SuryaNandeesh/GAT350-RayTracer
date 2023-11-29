@@ -1,6 +1,7 @@
 #pragma once
 #include <string>
 #include <SDL.h>
+#include <SDL_main.h>
 #include <iostream>
 namespace nc 
 {

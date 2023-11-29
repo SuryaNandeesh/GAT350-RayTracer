@@ -1,15 +1,16 @@
 #include <memory>
-
+#include "SDL.h"
 #include "Renderer.h"
+#include "Ray.h"
 
 namespace nc
 {
-	int main(int, char**)
+	int main(int argc, char* argv[])
 	{
 		std::cout << "hello world!\n";
 
 		//<create renderer>
-		Renderer();
+		Renderer renderer = Renderer();
 		//<initialize renderer>
 		Renderer().Initialize();
 		//<create renderer window with size of 400, 300>
@@ -33,4 +34,5 @@ namespace nc
 
 		return 0;
 	}
+
 }
