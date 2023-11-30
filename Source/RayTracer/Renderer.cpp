@@ -53,4 +53,11 @@ namespace nc
 		}
 		return true;
 	}
+	void Renderer::PresentCanvas(const Canvas& canvas)
+	{
+		// copy canvas texture to renderer
+		SDL_RenderCopy(m_renderer, canvas.m_texture, nullptr, nullptr);
+		// present renderer to screen
+		SDL_RenderPresent(m_renderer);
+	}
 };
