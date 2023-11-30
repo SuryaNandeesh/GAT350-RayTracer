@@ -4,8 +4,6 @@ typedef glm::vec3 color3_t;
 typedef glm::vec4 color4_t;
 typedef uint32_t rgba_t;
 
-namespace nc 
-{
 	static color4_t RGBAToColor(const rgba_t& rgba)
 	{
 		color4_t color;
@@ -26,4 +24,3 @@ namespace nc
 
 		return rgba;
 	}
-}

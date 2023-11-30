@@ -3,8 +3,7 @@
 #include <glm/glm.hpp>
 #include <vector>
 
-namespace nc
-{
+
     class Canvas
     {
     public:
@@ -26,4 +25,3 @@ namespace nc
 
         glm::ivec2 m_size{ 0 };
     };
-}

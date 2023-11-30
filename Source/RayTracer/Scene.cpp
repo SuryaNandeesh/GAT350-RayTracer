@@ -2,8 +2,7 @@
 #include "Canvas.h"
 #include "MathUtils.h"
 
-namespace nc
-{
+
 	void Scene::Render(Canvas& canvas)
 	{
 		// cast ray for each point (pixel) on the canvas
@@ -41,4 +40,4 @@ namespace nc
 
 		return color;
 	}
-}
+

@@ -1,9 +1,8 @@
 #include "Renderer.h"
-#include <SDL.h>
+#include "Canvas.h"
 #include <iostream>
 
-namespace nc 
-{
+
 	bool Renderer::Initialize()
 	{
 		if (SDL_Init(SDL_INIT_VIDEO) != 0)
@@ -60,4 +59,3 @@ namespace nc
 		// present renderer to screen
 		SDL_RenderPresent(m_renderer);
 	}
-};

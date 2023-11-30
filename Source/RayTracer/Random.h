@@ -1,8 +1,7 @@
 #pragma once
 #include <algorithm>
 
-namespace nc
-{
+
 	void seedRandom(unsigned int seed)
 	{
 		srand(seed);
@@ -18,4 +17,3 @@ namespace nc
 		if (min > max) std::swap(min, max);
 		return min + (max - min) * random01();
 	}
-}

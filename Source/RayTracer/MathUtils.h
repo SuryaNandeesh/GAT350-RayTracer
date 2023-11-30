@@ -1,8 +1,7 @@
 #pragma once
 #include "glm/glm.hpp"
 
-namespace nc
-{
+
 	template <typename T>
 	inline T lerp(const T& a, const T& b, float t)
 	{
@@ -21,4 +20,3 @@ namespace nc
 
 		);
 	}
-}

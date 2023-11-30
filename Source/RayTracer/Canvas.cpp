@@ -2,11 +2,9 @@
 #include "Renderer.h"
 #include <SDL.h>
 
-namespace nc
-{
 	Canvas::Canvas(int width, int height, const Renderer& renderer)
 	{
-		Canvas::m_size = { width, height };
+		m_size = { width, height };
 		m_texture = SDL_CreateTexture(renderer.m_renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_STREAMING, width, height);
 
 		m_buffer.resize(width * height);
@@ -37,4 +35,3 @@ namespace nc
 		if (point.x < 0 || point.y < 0 || point.x >= m_size.x || point.y >= m_size.y) return;
 		m_buffer[point.x + (point.y * m_size.x)] = ColorToRGBA(color);
 	}
-}

@@ -1,11 +1,9 @@
 #pragma once
 #include "Color.h"
-#include "Ray.h"
 #include "Camera.h"
 #include <memory>
 
-namespace nc
-{
+
 	class Scene
 	{
 	public:
@@ -26,4 +24,3 @@ namespace nc
 		color3_t m_topColor{ 0 };
 		color3_t m_bottomColor{ 1 };
 	};
-}

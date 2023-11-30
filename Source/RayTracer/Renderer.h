@@ -3,8 +3,7 @@
 #include <SDL.h>
 #include <SDL_main.h>
 #include <iostream>
-namespace nc 
-{
+
 	class Renderer
 	{
 	public:
@@ -26,4 +25,3 @@ namespace nc
 		SDL_Renderer* m_renderer = nullptr;
 
 	};
-}

@@ -1,18 +1,14 @@
 #include <memory>
-#include "SDL.h"
 #include "Renderer.h"
-#include "MathUtils.h"
-#include "Ray.h"
-#include "Color.h"
-#include "Canvas.h"
-#include <random>
 #include "Random.h"
+#include "Camera.h"
+#include "Canvas.h"
+#include "Scene.h"
 
-namespace nc
-{
+
 	int main(int argc, char* argv[])
 	{
-		std::cout << "hello world!\n";
+		std::cout << "hello world!" << std::endl;
 
 		//<create renderer>
 		Renderer renderer = Renderer();
@@ -23,7 +19,10 @@ namespace nc
 
 		Canvas canvas(400, 300, renderer);
 
-		//Scene scene; // sky color == top and bottom color
+		float aspectRatio = canvas.GetSize().x / (float)canvas.GetSize().y;
+		std::shared_ptr<Camera> camera = std::make_shared<Camera>(glm::vec3{ 0, 0, 1 }, glm::vec3{ 0, 0, 0 }, glm::vec3{ 0, 1, 0 }, 70.0f, aspectRatio);
+
+		//Scene scene; // sky color could be set with the top and bottom color
 		//scene.SetCamera(camera);
 
 		bool quit = false;
@@ -59,5 +58,3 @@ namespace nc
 
 		return 0;
 	}
-
-}
