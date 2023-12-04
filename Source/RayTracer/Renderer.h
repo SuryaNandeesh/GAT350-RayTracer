@@ -3,6 +3,7 @@
 #include <SDL.h>
 #include <SDL_main.h>
 #include <iostream>
+#include <memory>
 
 	class Renderer
 	{

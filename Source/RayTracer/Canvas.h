@@ -2,7 +2,7 @@
 #include "Color.h"
 #include <glm/glm.hpp>
 #include <vector>
-
+#include <memory>
 
     class Canvas
     {

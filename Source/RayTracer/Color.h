@@ -1,5 +1,7 @@
 #pragma once
 #include <glm/glm.hpp>
+#include <memory>
+
 typedef glm::vec3 color3_t;
 typedef glm::vec4 color4_t;
 typedef uint32_t rgba_t;

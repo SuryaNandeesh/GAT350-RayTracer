@@ -20,7 +20,7 @@
 	{
 		// set texture with buffer rgba_t data
 		//SDL_UpdateTexture(<https://wiki.libsdl.org/SDL2/SDL_UpdateTexture Links to an external site.>);
-		SDL_UpdateTexture(m_texture, nullptr, m_buffer.data(), m_size.x * sizeof(rgba_t));
+		SDL_UpdateTexture(m_texture, NULL, m_buffer.data(), m_size.x * sizeof(rgba_t));
 	}
 
 	void Canvas::Clear(const color4_t& color)

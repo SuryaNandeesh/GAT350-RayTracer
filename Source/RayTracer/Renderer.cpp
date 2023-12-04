@@ -1,6 +1,7 @@
 #include "Renderer.h"
 #include "Canvas.h"
 #include <iostream>
+#include <memory>
 
 
 	bool Renderer::Initialize()
@@ -16,23 +17,18 @@
 	void Renderer::Shutdown()
 	{
 		//<if SDL window is not null, destroy SDL window>
-		if (m_window != nullptr) {
-			SDL_DestroyWindow(m_window);
-			m_window = nullptr;
-		}
+		if (m_window) {SDL_DestroyWindow(m_window);}
 
 		//<if SDL renderer is not null, destroy SDL renderer>
-		if (m_renderer != nullptr) {
-			SDL_DestroyRenderer(m_renderer);
-			m_renderer = nullptr;
-		}
+		if (m_renderer) {SDL_DestroyRenderer(m_renderer);}
+
 		SDL_Quit();
 	}
 
 	bool Renderer::CreateWindow(const std::string& title, int width, int height)
 	{
 		//<create SDL window(https://wiki.libsdl.org/SDL2/SDL_CreateWindow Links to an external site.) >
-		m_window = SDL_CreateWindow(title.c_str(), SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, width, height, SDL_WINDOW_RESIZABLE);
+		m_window = SDL_CreateWindow(title.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, width, height, SDL_WINDOW_SHOWN);
 		if (!m_window)
 		{
 			std::cerr << "SDL Error: " << SDL_GetError() << std::endl;
@@ -45,9 +41,6 @@
 		if (!m_renderer)
 		{
 			std::cerr << "SDL Error: " << SDL_GetError() << std::endl;
-			SDL_DestroyWindow(m_window);
-			m_window = nullptr;
-			SDL_Quit();
 			return false;
 		}
 		return true;
@@ -55,7 +48,7 @@
 	void Renderer::PresentCanvas(const Canvas& canvas)
 	{
 		// copy canvas texture to renderer
-		SDL_RenderCopy(m_renderer, canvas.m_texture, nullptr, nullptr);
+		SDL_RenderCopy(m_renderer, canvas.m_texture, NULL, NULL);
 		// present renderer to screen
 		SDL_RenderPresent(m_renderer);
 	}
