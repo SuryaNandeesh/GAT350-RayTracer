@@ -25,3 +25,10 @@
 	{
 		return v1.x * v2.x + v1.y * v2.y + v1.z * v2.z;
 	}
+
+	inline glm::vec3 reflect(const glm::vec3& v, const glm::vec3& n)
+	{
+		//< https://registry.khronos.org/OpenGL-Refpages/gl4/html/reflect.xhtml>
+
+		return v - 2.0f * glm::dot(n, v) * n;
+	}

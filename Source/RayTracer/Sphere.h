@@ -12,7 +12,8 @@ public:
 		//<set center>,
 		m_center(center),
 		//<set radius>{}
-		m_radius(radius){}
+		m_radius(radius)
+	{}
 
 	bool Hit(const ray_t& ray, float minDistance, float maxDistance, raycastHit_t& raycastHit) override;
 
