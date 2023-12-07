@@ -12,6 +12,7 @@
 #include "glm/gtx/color_space.hpp"
 #include "Plane.h"
 #include "Mesh.h"
+#include "Triangle.h"
 
 void InitScene01(Scene& scene, const Canvas& canvas)
 {
@@ -58,7 +59,11 @@ void InitScene02(Scene& scene, const Canvas& canvas)
 	auto plane = std::make_unique<Plane>(glm::vec3{ 0, 0, 0 }, glm::vec3{ 0, 1, 0 }, std::make_shared<Lambertian>(color3_t{ 0.2f }));
 	scene.AddObject(std::move(plane));
 
-	auto mesh = std::make_unique<Mesh>(std::make_shared<Lambertian>(color3_t{ 0, 0, 1 }));
+	//auto mesh = std::make_unique<Mesh>(std::make_shared<Lambertian>(color3_t{ 0, 0, 1 }));
+	//mesh->Load("models/cube.obj", glm::vec3{ 0, 0.5f, 0 }, glm::vec3{ 0, 45, 0 });
+	//scene.AddObject(std::move(mesh));
+
+	auto mesh = std::make_unique<Mesh>(std::make_shared<Emissive>(color3_t{ 20 }));
 	mesh->Load("models/cube.obj", glm::vec3{ 0, 0.5f, 0 }, glm::vec3{ 0, 45, 0 });
 	scene.AddObject(std::move(mesh));
 }
@@ -90,7 +95,7 @@ void InitSceneCornell(Scene& scene, const Canvas& canvas)
 		scene.AddObject(std::move(plane));
 	}
 	{
-		auto mesh = std::make_unique<Mesh>(std::make_shared<Emissive>(color3_t{ 1 }));
+		auto mesh = std::make_unique<Mesh>(std::make_shared<Emissive>(color3_t{ 20 }));
 		mesh->Load("models/quad.obj", glm::vec3{ 0, 2, 0 }, glm::vec3{ 90, 0, 0 });
 		scene.AddObject(std::move(mesh));
 	}
@@ -111,7 +116,7 @@ int main(int argc, char* argv[])
 {
 	const int width = 800;
 	const int height = 600;
-	const int samples = 3;
+	const int samples = 200;
 	const int depth = 6;
 
 	std::cout << "Hello World!" << std::endl;
@@ -120,9 +125,12 @@ int main(int argc, char* argv[])
 	renderer.CreateWindow("Ray Tracer", width, height);
 
 	Canvas canvas(width, height, renderer);
-	Scene scene(glm::vec3{ 1.0f }, glm::vec3{ 0.5f, 0.7f, 1.0f }); // sky color could be set with the top and bottom color
+	Scene scene(glm::vec3{ 1.0f }, glm::vec3{ 0.5f, 0.7f, 1.0f }); // sky color could be set with the top and bottom color // blue
+	//Scene scene(glm::vec3{ 0.0f }, glm::vec3{ 0.0f, 0.0f, 0.0f }); // sky color could be set with the top and bottom color //for making the emmisive box
 
 	InitSceneCornell(scene, canvas);
+	//InitScene01(scene, canvas);
+	//InitScene02(scene, canvas);
 
 	// render scene
 	canvas.Clear({ 0, 0, 0, 1 });
