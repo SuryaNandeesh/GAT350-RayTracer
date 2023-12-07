@@ -10,22 +10,16 @@
 	{
 	public:
 		Scene() = default;
+
+		Scene(int depth = 5) : m_depth{ depth } {}
+
 		Scene(const color3_t& topColor, const color3_t& bottomColor) :
 			m_topColor{ topColor },
 			m_bottomColor{ bottomColor }
 		{}
 
-		Scene(int depth = 5) : m_depth{ depth } {}
-		Scene(int depth, const color3_t& topColor, const color3_t& bottomColor) :
-			m_depth{ depth },
-			m_topColor{ topColor },
-			m_bottomColor{ bottomColor }
-		{}
+		void Render(class Canvas& canvas, int numSamples, int depth);
 
-		void Render(class Canvas& canvas);
-		color3_t Trace(const ray_t& ray);
-
-		color3_t Trace(const ray_t& ray, float minDistance, float maxDistance, raycastHit_t& raycastHit);
 		color3_t Trace(const ray_t& ray, float minDistance, float maxDistance, raycastHit_t& raycastHit, int depth);
 
 		void AddObject(std::unique_ptr<Object> object) { m_objects.push_back(std::move(object)); }

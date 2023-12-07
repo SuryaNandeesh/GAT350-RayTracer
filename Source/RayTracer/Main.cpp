@@ -2,85 +2,167 @@
 #include "Renderer.h"
 #include "Random.h"
 #include "Camera.h"
+#include "Color.h"
 #include "Canvas.h"
 #include "Scene.h"
 #include "Material.h"
+#include "MathUtils.h"
+#include "Object.h"
 #include "Sphere.h"
+#include "glm/gtx/color_space.hpp"
+#include "Plane.h"
+#include "Mesh.h"
 
+void InitScene01(Scene& scene, const Canvas& canvas)
+{
+	float aspectRatio = canvas.GetSize().x / (float)canvas.GetSize().y;
+	std::shared_ptr<Camera> camera = std::make_shared<Camera>(glm::vec3{ 0, 2, 10 }, glm::vec3{ 0, 1, 0 }, glm::vec3{ 0, 1, 0 }, 20.0f, aspectRatio);
+	scene.SetCamera(camera);
 
-	int main(int argc, char* argv[])
+	// create objects -> add to scene
+	for (int x = -10; x < 10; x++)
 	{
-		std::cout << "hello world!" << std::endl;
+		for (int z = -10; z < 10; z++)
+		{
+			std::shared_ptr<Material> material;
 
-		seedRandom((int)time(nullptr));
+			// create random material
+			float r = random01();
+			if (r < 0.3f)		material = std::make_shared<Lambertian>(glm::rgbColor(glm::vec3{ random(0, 360), 1.0f, 1.0f }));
+			else if (r < 0.6f)	material = std::make_shared<Metal>(color3_t{ random(0.5f, 1.0f) }, random(0, 0.5f));
+			else if (r < 0.9f)	material = std::make_shared<Dielectric>(color3_t{ 1.0f }, random(1.1f, 2));
+			else				material = std::make_shared<Emissive>(glm::rgbColor(glm::vec3{ random(0, 360), 1.0f, 1.0f }), 5.0f);
 
-		//<create renderer>
-		Renderer renderer;
-		//<initialize renderer>
-		renderer.Initialize();
-		//<create renderer window with size of x, y>
-		renderer.CreateWindow("RayTracer", 800, 600);
-
-		Canvas canvas(800, 600, renderer);
-
-		float aspectRatio = canvas.GetSize().x / (float)canvas.GetSize().y;
-		std::shared_ptr<Camera> camera = std::make_shared<Camera>(glm::vec3{ 0, 1, 5 }, glm::vec3{ 0, 0, 0 }, glm::vec3{ 0, 1, 0 }, 70.0f, aspectRatio);
-
-		Scene scene(20); // sky color could be set with the top and bottom color
-		scene.SetCamera(camera);
-
-		// create material
-		auto lambertian = std::make_shared<Lambertian>(color3_t{ 0, 0, 1 });
-		auto metal = std::make_shared<Metal>(color3_t{ 1, 1, 1 }, 0.0f);
-
-		// create objects -> add to scene
-		for (int i = 0; i < 10; i++)
-		{ //<use rand() and %to randomly pick the material>
-			std::shared_ptr<Material> material = rand() % 2 ? std::dynamic_pointer_cast<Material>(lambertian) : std::dynamic_pointer_cast<Material>(metal);
-			//<create the sphere with the material>
-			auto sphere = std::make_unique<Sphere>(glm::vec3{ random(-3, 3), random(-3, 3), random(-3, 0) }, 0.5f, material);
+			// set random sphere radius
+			float radius = random(0.2f, 0.3f);
+			// create sphere using random radius and material
+			auto sphere = std::make_unique<Sphere>(glm::vec3{ x + random(-0.5f, 0.5f), radius, z + random(-0.5f, 0.5f) }, radius, material);
+			// add sphere to the scene
 			scene.AddObject(std::move(sphere));
 		}
+	}
 
-		bool quit = false;
-		while (!quit)
+	auto plane = std::make_unique<Plane>(glm::vec3{ 0, 0, 0 }, glm::vec3{ 0, 1, 0 }, std::make_shared<Lambertian>(color3_t{ 0.2f }));
+	scene.AddObject(std::move(plane));
+}
+
+void InitScene02(Scene& scene, const Canvas& canvas)
+{
+	float aspectRatio = canvas.GetSize().x / (float)canvas.GetSize().y;
+	std::shared_ptr<Camera> camera = std::make_shared<Camera>(glm::vec3{ 0, 2, 10 }, glm::vec3{ 0, 1, 0 }, glm::vec3{ 0, 1, 0 }, 20.0f, aspectRatio);
+	scene.SetCamera(camera);
+
+	//auto triangle = std::make_unique<Triangle>(glm::vec3{ -1, 0, 0 }, glm::vec3{ 1, 0, 0 }, glm::vec3{ 0, 2, 0 }, std::make_shared<Lambertian>(color3_t{ 1, 0, 0 }));
+	//scene.AddObject(std::move(triangle));
+
+	auto plane = std::make_unique<Plane>(glm::vec3{ 0, 0, 0 }, glm::vec3{ 0, 1, 0 }, std::make_shared<Lambertian>(color3_t{ 0.2f }));
+	scene.AddObject(std::move(plane));
+
+	auto mesh = std::make_unique<Mesh>(std::make_shared<Lambertian>(color3_t{ 0, 0, 1 }));
+	mesh->Load("models/cube.obj", glm::vec3{ 0, 0.5f, 0 }, glm::vec3{ 0, 45, 0 });
+	scene.AddObject(std::move(mesh));
+}
+
+void InitSceneCornell(Scene& scene, const Canvas& canvas)
+{
+	float aspectRatio = canvas.GetSize().x / (float)canvas.GetSize().y;
+	std::shared_ptr<Camera> camera = std::make_shared<Camera>(glm::vec3{ 0, 0, 15 }, glm::vec3{ 0, 0, 0 }, glm::vec3{ 0, 1, 0 }, 20.0f, aspectRatio);
+	scene.SetCamera(camera);
+
+	{
+		auto plane = std::make_unique<Plane>(glm::vec3{ 0, -2, 0 }, glm::vec3{ 0, 1, 0 }, std::make_shared<Lambertian>(color3_t{ 1 }));
+		scene.AddObject(std::move(plane));
+	}
+	{
+		auto plane = std::make_unique<Plane>(glm::vec3{ 0, 2, 0 }, glm::vec3{ 0, -1, 0 }, std::make_shared<Lambertian>(color3_t{ 1 }));
+		scene.AddObject(std::move(plane));
+	}
+	{
+		auto plane = std::make_unique<Plane>(glm::vec3{ 0, 0, -2 }, glm::vec3{ 0, 0, 1 }, std::make_shared<Lambertian>(color3_t{ 1 }));
+		scene.AddObject(std::move(plane));
+	}
+	{
+		auto plane = std::make_unique<Plane>(glm::vec3{ -2, 0, 0 }, glm::vec3{ 1, 0, 0 }, std::make_shared<Lambertian>(color3_t{ 1, 0, 0 }));
+		scene.AddObject(std::move(plane));
+	}
+	{
+		auto plane = std::make_unique<Plane>(glm::vec3{ 2, 0, 0 }, glm::vec3{ -1, 0, 0 }, std::make_shared<Lambertian>(color3_t{ 0, 1, 0 }));
+		scene.AddObject(std::move(plane));
+	}
+	{
+		auto mesh = std::make_unique<Mesh>(std::make_shared<Emissive>(color3_t{ 1 }));
+		mesh->Load("models/quad.obj", glm::vec3{ 0, 2, 0 }, glm::vec3{ 90, 0, 0 });
+		scene.AddObject(std::move(mesh));
+	}
+	{
+		auto mesh = std::make_unique<Mesh>(std::make_shared<Lambertian>(color3_t{ 1 }));
+		mesh->Load("models/cube.obj", glm::vec3{ -1, -1.5f, 0 }, glm::vec3{ 0, 30, 0 });
+		scene.AddObject(std::move(mesh));
+	}
+	{
+		auto mesh = std::make_unique<Mesh>(std::make_shared<Lambertian>(color3_t{ 1, 1, 1 }));
+		mesh->Load("models/cube.obj", glm::vec3{ 1, -1.5f, 1 }, glm::vec3{ 0, -10, 0 });
+		scene.AddObject(std::move(mesh));
+	}
+
+}
+
+int main(int argc, char* argv[])
+{
+	const int width = 800;
+	const int height = 600;
+	const int samples = 3;
+	const int depth = 6;
+
+	std::cout << "Hello World!" << std::endl;
+	Renderer renderer;
+	renderer.Initialize();
+	renderer.CreateWindow("Ray Tracer", width, height);
+
+	Canvas canvas(width, height, renderer);
+	Scene scene(glm::vec3{ 1.0f }, glm::vec3{ 0.5f, 0.7f, 1.0f }); // sky color could be set with the top and bottom color
+
+	InitSceneCornell(scene, canvas);
+
+	// render scene
+	canvas.Clear({ 0, 0, 0, 1 });
+	scene.Render(canvas, samples, depth);
+	canvas.Update();
+
+	bool quit = false;
+	while (!quit)
+	{
+		SDL_Event event;
+		SDL_PollEvent(&event);
+		switch (event.type)
 		{
-			SDL_Event event;
-			SDL_PollEvent(&event);
-			switch (event.type)
+		case SDL_QUIT:
+			quit = true;
+			break;
+		case SDL_KEYDOWN:
+			switch (event.key.keysym.sym)
 			{
-			case SDL_QUIT:
+			case SDLK_ESCAPE:
 				quit = true;
 				break;
-			case SDL_KEYDOWN:
-				switch (event.key.keysym.sym)
-				{
-				case SDLK_ESCAPE:
-					quit = true;
-					break;
-				}
-				break;
 			}
-
-			/*
-			//canvas.Clear({ 0, 0, 0, 1 });
-			for (int i = 0; i < 1000; i++)
-			{
-				canvas.DrawPoint({ random(0, 800), random(0, 600) }, { random(0,1), random(0,1), random(0,1), 1 });
-			}
-			canvas.Update();
-			*/
-			
-			canvas.Clear({ 0, 0, 0, 1 });
-			scene.Render(canvas);
-			canvas.Update();
-
-			renderer.PresentCanvas(canvas);
-
+			break;
 		}
 
-		//<shutdown renderer>
-		renderer.Shutdown();
 
-		return 0;
+		/*
+		//canvas.Clear({ 0, 0, 0, 1 });
+		for (int i = 0; i < 1000; i++)
+		{
+			canvas.DrawPoint({ random(0, 400), random(0, 300) }, { random01(), random01(), random01(), 1 });
+		}
+		canvas.Update();
+		*/
+
+		renderer.PresentCanvas(canvas);
 	}
+
+	renderer.Shutdown();
+
+	return 0;
+}
