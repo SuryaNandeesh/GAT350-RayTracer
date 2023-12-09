@@ -112,11 +112,57 @@ void InitSceneCornell(Scene& scene, const Canvas& canvas)
 
 }
 
+void InitSceneFinal(Scene& scene, const Canvas& canvas)
+{
+	float aspectRatio = canvas.GetSize().x / (float)canvas.GetSize().y;
+	std::shared_ptr<Camera> camera = std::make_shared<Camera>(glm::vec3{ 0, 2, 15 }, glm::vec3{ 0, 1, 0 }, glm::vec3{ 0, 1, 0 }, 20.0f, aspectRatio);
+	scene.SetCamera(camera);
+
+	// create objects -> add to scene
+	for (int x = -6; x < 6; x++)
+	{
+		for (int z = -6; z < 6; z++)
+		{
+			std::shared_ptr<Material> material;
+
+			// create random material
+			float r = random01();
+			if (r < 0.3f)		material = std::make_shared<Lambertian>(glm::rgbColor(glm::vec3{ random(0, 360), 1.0f, 1.0f }));
+			else if (r < 0.6f)	material = std::make_shared<Metal>(color3_t{ random(0.5f, 1.0f) }, random(0, 0.5f));
+			else if (r < 0.9f)	material = std::make_shared<Dielectric>(color3_t{ 1.0f }, random(1.1f, 2));
+			else				material = std::make_shared<Emissive>(glm::rgbColor(glm::vec3{ random(0, 360), 1.0f, 1.0f }), 5.0f);
+
+			std::unique_ptr<Object> object;
+			// random radius
+			float radius = random(0.2f, 0.3f);
+			// randomizer for everything else
+			float r2 = random01();
+			if (r2 < 0.7f)
+				object = std::make_unique<Sphere>(glm::vec3{ x + random(-0.5f, 0.5f), radius, z + random(-0.5f, 0.5f) }, radius, material);
+			else if (r2 < 0.8f)
+			{
+				object = std::make_unique<Mesh>(material);
+				dynamic_cast<Mesh*>(object.get())->Load("models/cube.obj", glm::vec3{ x + random(-0.8f, 0.8f), 0.5, z + random(-0.8f, 0.8f) }, glm::vec3{ random(0, 360), random(0, 360), random(0, 360) }, glm::vec3{ 0.3 });
+			}
+			else
+			{
+				object = std::make_unique<Triangle>(glm::vec3{ x + random(-0.9f, 0), 0, z + random(-0.9f, 0.9f) }, glm::vec3{ x + random(0, 0.9f), 0, z + random(-0.9f, 0.9f) }, glm::vec3{ x + random(-0.9f, 0.9f), random(0.1f, 1), z + random(-0.9f, 0.9f) }, material);
+			}
+			// add object to the scene
+			scene.AddObject(std::move(object));
+		}
+	}
+	//plane so it doesnt just sit in the air, suspeneded
+	auto plane = std::make_unique<Plane>(glm::vec3{ 0, 0, 0 }, glm::vec3{ 0, 1, 0 }, std::make_shared<Lambertian>(color3_t{ 0.2f }));
+	scene.AddObject(std::move(plane));
+}
+
+
 int main(int argc, char* argv[])
 {
 	const int width = 800;
 	const int height = 600;
-	const int samples = 200;
+	const int samples = 20;
 	const int depth = 6;
 
 	std::cout << "Hello World!" << std::endl;
@@ -128,9 +174,10 @@ int main(int argc, char* argv[])
 	Scene scene(glm::vec3{ 1.0f }, glm::vec3{ 0.5f, 0.7f, 1.0f }); // sky color could be set with the top and bottom color // blue
 	//Scene scene(glm::vec3{ 0.0f }, glm::vec3{ 0.0f, 0.0f, 0.0f }); // sky color could be set with the top and bottom color //for making the emmisive box
 
-	InitSceneCornell(scene, canvas);
+	//InitSceneCornell(scene, canvas);
 	//InitScene01(scene, canvas);
 	//InitScene02(scene, canvas);
+	InitSceneFinal(scene, canvas);
 
 	// render scene
 	canvas.Clear({ 0, 0, 0, 1 });
